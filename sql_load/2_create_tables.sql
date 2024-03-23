@@ -35,7 +35,8 @@ CREATE TABLE public.job_postings_fact
     salary_rate TEXT,
     salary_year_avg NUMERIC,
     salary_hour_avg NUMERIC,
-    FOREIGN KEY (company_id) REFERENCES public.company_dim (company_id)
+    FOREIGN KEY (company_id) REFERENCES public.company_dim (company_id),
+    FOREIGN KEY (job_country) REFERENCES public.country_population (job_country)
 );
 
 -- Create skills_job_dim table with a composite primary key and foreign keys
@@ -48,13 +49,25 @@ CREATE TABLE public.skills_job_dim
     FOREIGN KEY (skill_id) REFERENCES public.skills_dim (skill_id)
 );
 
+-- job_country table with a population 
+CREATE TABLE public.country_population
+
+(
+    job_country TEXT PRIMARY KEY,
+    population INT
+
+);
+
+
 -- Set ownership of the tables to the postgres user
 ALTER TABLE public.company_dim OWNER to postgres;
 ALTER TABLE public.skills_dim OWNER to postgres;
 ALTER TABLE public.job_postings_fact OWNER to postgres;
 ALTER TABLE public.skills_job_dim OWNER to postgres;
+ALTER TABLE public.country_population OWNER to postgres;
 
 -- Create indexes on foreign key columns for better performance
 CREATE INDEX idx_company_id ON public.job_postings_fact (company_id);
 CREATE INDEX idx_skill_id ON public.skills_job_dim (skill_id);
 CREATE INDEX idx_job_id ON public.skills_job_dim (job_id);
+CREATE INDEX idx_job_country_id ON public.country_population (job_country);
